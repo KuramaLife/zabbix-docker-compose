@@ -1,31 +1,23 @@
-version:'3.7'
-
-networks:
-  network-zabbix:
-    driver: bridge
+version: '2'
 
 services:
   mysql:
     container_name: mysql
     image: mysql:5.7
-    networks:
-      - network-zabbix
     ports:
       - '3306:3306'
     volumes:
       - './zabbix/mysql:/var/lib/data'
     environment:
-      - MYSQL_ROOT_PASSWORD=carryontech
+      - MYSQL_ROOT_PASSWORD=Arkveid-01
       - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
+      - MYSQL_USER=Alex
+      - MYSQL_PASSWORD=Arkveid-01
 
   zabbix-server:
     container_name: zabbix-server
     image: zabbix/zabbix-server-mysql:ubuntu-5.0.1
-    networks:
-      - network-zabbix
-      links:
+    links:
       - mysql
     restart: always
     ports:
@@ -35,36 +27,31 @@ services:
     environment:
       - DB_SERVER_HOST=mysql
       - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
+      - MYSQL_USER=Alex
+      - MYSQL_PASSWORD=Arkveid-01
     depends_on:
       - mysql
 
   zabbix-frontend:
     container_name: zabbix-frontend
-    image: zabbix/zabbix-web-apache-mysql:ubuntu-5.0.1
-    networks:
-      - network-zabbix
+    image: zabbix/zabbix-web-nginx-mysql:ubuntu-5.0.1
     links:
       - mysql
     restart: always
     ports:
       - '80:8080'
-      - '443:8443'
     environment:
       - DB_SERVER_HOST=mysql
       - MYSQL_DATABASE=zabbix
-      - MYSQL_USER=zabbix
-      - MYSQL_PASSWORD=carryontech
-      - PHP_TZ=America/Sao_Paulo
+      - MYSQL_USER=Alex
+      - MYSQL_PASSWORD=Arkveid-01
+      - PHP_TZ=Europe/Minsk
     depends_on:
       - mysql
    
   grafana:
     container_name: grafana
     image: grafana/grafana
-    networks:
-      - network-zabbix
     links:
       - mysql
       - zabbix-server
@@ -78,10 +65,8 @@ services:
       - zabbix-server
   zabbix-agent:
     container_name: zabbix-agent
-    image: zabbix/zabbix-agent2:alpine-5.0.1
+    image: zabbix/zabbix-agent:ubuntu-5.0.1
     user: root
-    networks:
-      - network-zabbix
     links:
       - zabbix-server
     restart: always
@@ -89,8 +74,6 @@ services:
     volumes:
       - /var/run:/var/run
     ports:
-      - '10050:10050'
+      - 10050:10050
     environment:
-      - ZBX_HOSTNAME=Zabbix server
-    
-    
+      - ZBX_HOSTNAME=zabbix-server
