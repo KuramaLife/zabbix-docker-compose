@@ -25,7 +25,7 @@ services:
     image: zabbix/zabbix-server-mysql:ubuntu-5.0.1
     networks:
       - network-zabbix
-    links:
+      links:
       - mysql
     restart: always
     ports:
