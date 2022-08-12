@@ -63,7 +63,7 @@ services:
     depends_on:
       - mysql
       - zabbix-server
-  zabbix-agent:
+    zabbix-agent:
     container_name: zabbix-agent
     image: zabbix/zabbix-agent:ubuntu-5.0.1
     user: root
